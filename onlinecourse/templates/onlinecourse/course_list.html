@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Course Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand mnj_nav_brand" href="{% url 'onlinecourse:index' %}">Online Course App</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="navbar-text mr-3">Welcome, <strong>{{ user.username }}</strong></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" href="{% url 'onlinecourse:logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item mr-2">
+                        <a class="btn btn-outline-primary" href="{% url 'onlinecourse:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 mnj_main_container">
+    <h2 class="mb-4 text-center">Available Training Courses</h2>
+    
+    {% if course_list %}
+        <div class="row">
+            {% for course in course_list %}
+                <div class="col-md-4 d-flex align-items-stretch">
+                    <div class="card mb-4 shadow-sm w-100 mnj_course_card">
+                        {% if course.image %}
+                            <img class="card-img-top" src="{{ course.image.url }}" alt="{{ course.name }} cover image" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary text-white text-center d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span>No Image Available</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mnj_card_title">{{ course.name }}</h5>
+                            <p class="card-text text-muted small">Published: {{ course.pub_date }}</p>
+                            <p class="card-text flex-grow-1">{{ course.description|truncatewords:20 }}</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'onlinecourse:course_details' course.id %}" class="btn btn-block btn-outline-primary mnj_view_btn">View Course Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            No courses are currently available in the catalog. Check back soon!
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
